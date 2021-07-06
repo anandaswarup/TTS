@@ -9,26 +9,26 @@ _whitespace_re = re.compile(r"\s+")
 
 # Regex for common abbreviations
 _abbreviations = [(re.compile(fr"\b{abbreviation}\.",
-                              re.IGNORECASE), replacement.upper())
+                              re.IGNORECASE), replacement)
                   for abbreviation, replacement in [
-                      ("mrs", "missis"),
-                      ("mr", "mister"),
-                      ("dr", "doctor"),
-                      ("st", "saint"),
-                      ("co", "company"),
-                      ("jr", "junior"),
-                      ("maj", "major"),
-                      ("gen", "general"),
-                      ("drs", "doctors"),
-                      ("rev", "reverend"),
-                      ("lt", "lieutenant"),
-                      ("hon", "honorable"),
-                      ("sgt", "sergeant"),
-                      ("capt", "captain"),
-                      ("esq", "esquire"),
-                      ("ltd", "limited"),
-                      ("col", "colonel"),
-                      ("ft", "fort"),
+                      ("mrs", "Missis"),
+                      ("mr", "Mister"),
+                      ("dr", "Doctor"),
+                      ("st", "Saint"),
+                      ("co", "Company"),
+                      ("jr", "Junior"),
+                      ("maj", "Major"),
+                      ("gen", "General"),
+                      ("drs", "Doctors"),
+                      ("rev", "Reverend"),
+                      ("lt", "Lieutenant"),
+                      ("hon", "Honorable"),
+                      ("sgt", "Sergeant"),
+                      ("capt", "Captain"),
+                      ("esq", "Esquire"),
+                      ("ltd", "Limited"),
+                      ("col", "Colonel"),
+                      ("ft", "Fort"),
                       ("etc", "etcetera"),
                   ]]
 
@@ -121,13 +121,16 @@ def collapse_whitespace(text):
     return re.sub(_whitespace_re, " ", text)
 
 
-def add_punctuation(text):
-    """Add punctuation to end of sentence (to indicate end of sequence)
+def normalize_punctuation(text):
+    """Normalize punctuation as well as dd punctuation to end of sentence (to indicate end of sequence)
     """
     if len(text) == 0:
         return text
 
     if text[-1] not in '!,.:;?':
         text = text + "."
+
+    text = re.sub(r"([!\'(),-.:;?])", r" \1 ", text)
+    text = collapse_whitespace(text)
 
     return text
