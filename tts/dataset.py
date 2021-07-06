@@ -12,7 +12,7 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import Dataset
 
 if cfg.text_processor == "en":
-    from text.en.processor import symbol_to_id, text_to_sequence
+    from text.en.processor import load_cmudict, symbol_to_id, text_to_sequence
 else:
     raise NotImplementedError
 
@@ -97,6 +97,8 @@ class TTSDataset(Dataset):
             os.path.join(train_data_dir, "train.csv"))
         self.lengths = [instance[2] for instance in self.training_instances]
 
+        self.cmudict = load_cmudict()
+
     def __len__(self):
         return len(self.training_instances)
 
@@ -107,7 +109,7 @@ class TTSDataset(Dataset):
         mel_path = os.path.join(self.train_data_dir, "mel", filename + ".npy")
         mel = np.load(mel_path)
 
-        text = text_to_sequence(text)
+        text = text_to_sequence(text, self.cmudict)
 
         return (torch.LongTensor(text),
                 torch.FloatTensor(mel).transpose_(0, 1).contiguous())
