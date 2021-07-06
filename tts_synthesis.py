@@ -11,7 +11,7 @@ from tts.model import Tacotron
 from vocoder.model import WaveRNN
 
 if cfg.text_processor == "en":
-    from text.en.processor import symbol_to_id, text_to_sequence
+    from text.en.processor import load_cmudict, symbol_to_id, text_to_sequence
 else:
     raise NotImplementedError
 
@@ -73,11 +73,13 @@ def synthesize_all(synthesis_instances, seq2seq_checkpoint_path,
     vocoder_model.load_state_dict(vocoder_checkpoint["model"])
     vocoder_step = vocoder_checkpoint["step"]
 
+    cmudict = load_cmudict()
+
     # Generate waveforms for all synthesis instances
     for fileid, text in synthesis_instances:
         print(f"Synthesizing text for: {fileid}", flush=True)
 
-        text = torch.LongTensor(text_to_sequence(text)).unsqueeze(0)
+        text = torch.LongTensor(text_to_sequence(text, cmudict)).unsqueeze(0)
         text = text.to(device)
 
         # Synthesize audio
