@@ -10,7 +10,7 @@ from text.en.normalization import (expand_abbreviations, normalize_numbers,
 _pad = "_PAD_"
 _eos = "_EOS_"
 _unk = "_UNK_"
-_punctuation = "()[]!\'(),-.:;? "
+_punctuation = "[]!\'(),-.:;? "
 _english_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 _cmudict_symbols = [
