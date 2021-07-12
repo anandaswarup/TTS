@@ -7,6 +7,11 @@ import inflect
 # Regular expression matching whitespace:
 _whitespace_re = re.compile(r"\s+")
 
+# Regular expression for matching parenthesis and dashes
+parentheses_pattern = re.compile(
+    r"(?<=[.,!?] )[\(\[]|[\)\]](?=[.,!?])|^[\(\[]|[\)\]]$")
+dash_pattern = re.compile(r"(?<=[.,!?] )-- ")
+
 # Regex for common abbreviations
 _abbreviations = [(re.compile(fr"\b{abbreviation}\.",
                               re.IGNORECASE), replacement)
@@ -122,15 +127,25 @@ def collapse_whitespace(text):
 
 
 def normalize_punctuation(text):
-    """Normalize punctuation as well as dd punctuation to end of sentence (to indicate end of sequence)
+    """Normalize all punctuation in the text
     """
-    if len(text) == 0:
-        return text
+    # Replace semi-colons and colons with commas
+    text = text.replace(";", ",")
+    text = text.replace(":", ",")
 
-    if text[-1] not in '!,.:;?':
-        text = text + "."
+    # Replace dashes with commas
+    text = dash_pattern.sub("", text)
+    text = text.replace(" --", ",")
+    text = text.replace(" - ", ", ")
 
-    text = re.sub(r"([!\'(),-.:;?])", r" \1 ", text)
-    text = collapse_whitespace(text)
+    # Split hyphenated words
+    text = text.replace("-", " ")
+
+    # Replace parenthesis with commas
+    text = parentheses_pattern.sub("", text)
+    text = text.replace(")", ",")
+    text = text.replace(" (", ", ")
+    text = text.replace("]", ",")
+    text = text.replace(" [", ", ")
 
     return text
