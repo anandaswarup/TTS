@@ -18,7 +18,7 @@ from tts.dataset import BucketBatchSampler, TTSDataset, collate
 from tts.model import Tacotron
 
 if cfg.text_processor == "en":
-    from text.en.processor import symbol_to_id
+    from text.en.processor import _symbol_to_id
 else:
     raise NotImplementedError
 
@@ -77,7 +77,7 @@ def train_model(data_dir, checkpoint_dir, alignments_dir,
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Instantiate the model
-    num_chars = len(symbol_to_id)
+    num_chars = len(_symbol_to_id)
 
     model = Tacotron(num_chars=num_chars)
     model = model.to(device)
