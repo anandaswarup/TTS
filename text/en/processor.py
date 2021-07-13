@@ -32,7 +32,6 @@ symbols = [_pad, _eos, _unk
            ] + list(_english_characters) + list(_punctuation) + _arpabet
 
 _symbol_to_id = {s: i for i, s in enumerate(symbols)}
-_id_to_symbol = {i: s for i, s in enumerate(symbols)}
 
 alt_entry_pattern = re.compile(r"(?<=\w)\((\d)\)")
 
