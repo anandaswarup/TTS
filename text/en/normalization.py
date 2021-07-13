@@ -149,3 +149,25 @@ def normalize_punctuation(text):
     text = text.replace(" [", ", ")
 
     return text
+
+
+def add_punctuation(text):
+    """Add full stop to end of text sequence (to explicitly tell the decoder to output EOS)
+    """
+    if len(text) == 0:
+        return text
+    if text[-1] not in "!,.:;?":
+        text = text + "."
+
+    return text
+
+
+def normalize_text(text):
+    """Normalization pipeline for English text including number and abbreviation expansion
+    """
+    text = add_punctuation(text)
+    text = normalize_numbers(text)
+    text = expand_abbreviations(text)
+    text = collapse_whitespace(text)
+
+    return text
